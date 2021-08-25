@@ -7,7 +7,6 @@ const width = canvas.width, height = canvas.height;
 
 const cellSize = 20;
 let dir;
-var gameState;
 
 let keys = {
     left: false,
@@ -16,16 +15,23 @@ let keys = {
     down: false
 }
 
-function gameLoop() {
-    drawBG();
-    block.draw(block.currentBlock, block.pos.x, block.pos.y);
-    drawGrid();
-    block.fall();
-}
+let dropCounter = 0;
+let lastTime = 0;
+let deltaTime = 0;
+function update (time = 0) {
+    deltaTime = time - lastTime;
+    lastTime = time;
+    dropCounter += deltaTime;
+    if (dropCounter > 1000) {
+        block.fall();
+    }
 
-setInterval(() => {
-    requestAnimationFrame(gameLoop);
-}, 1000);
+    inputHandler();
+    drawBG();
+    drawGrid();
+    block.draw(block.currentBlock, block.pos.x, block.pos.y);
+    requestAnimationFrame(update);
+}
 
 function drawBG() {
     ctx.fillStyle = '#fff';
@@ -35,7 +41,7 @@ function drawBG() {
 function drawGrid() {
     for (i = 0; i < 10; i++) {
         for (j = 0; j < 20; j++) {
-            ctx.strokeStyle = "#666";
+            ctx.strokeStyle = "#888";
             ctx.beginPath();
             ctx.rect(i * cellSize, j * cellSize, cellSize, cellSize);
             ctx.stroke();
@@ -67,22 +73,27 @@ document.addEventListener('keyup', e => {
     }
 });
 
+// AFTER key press needs to execute code once every 100ms.
+let moveDelay = 0;
 function inputHandler() {
     if(keys.right === true) {
-        dir = 1;
+        moveDelay += deltaTime;
+        if(moveDelay >= 100) {
+            block.move(1);
+            moveDelay = 0;
+        }
     } else if (keys.left === true) {
-        dir = -1;
+        moveDelay += deltaTime;
+        if(moveDelay >= 100) {
+            block.move(-1);
+            moveDelay = 0;
+        }
     }
 } 
-
-function colide(shape, gameState) {
-    
-}
 
 function start() {
     block.generateBlock();
 }
 
 start();
-gameLoop();
- 
+update(); 
