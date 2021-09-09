@@ -3,16 +3,32 @@
 <head>
     <style>
         body {
-            height: 400px;
-            width: 400px;
+            height: 480px;
             padding: 0;
             margin: 0;
         }
+
+        #canvas {
+            border-style: solid;
+            border-width: thick;
+        }
+
+        #line {
+            border-style: solid;
+            border-width: medium;
+            position: absolute;
+            top: 0px;
+            left: 205px;
+            width: 0px;
+            height: 480px;
+        }
+
     </style>
     <meta charset="UTF-8">
     <title>Tetrees!</title>
 </head>
 <body>
+    <div id='line'></div>
     <canvas id="canvas"></canvas>
     <script src="util.js"></script>
     <script src="arena.js"></script>
